@@ -58,5 +58,9 @@
 
   var bookings = getBookings();
 
-  window.data = bookings;
+  window.data = {
+    bookings: bookings,
+    minCoordinateY: MIN_COORDINATE_Y,
+    maxCoordinateY: MAX_COORDINATE_Y
+  };
 })();

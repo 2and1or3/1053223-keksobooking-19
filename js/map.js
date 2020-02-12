@@ -7,8 +7,8 @@
 
   var makePins = function () {
 
-    for (var i = 0; i < window.data.length; i++) {
-      fragment.appendChild(window.pin.renderPin(window.data[i]));
+    for (var i = 0; i < window.data.bookings.length; i++) {
+      fragment.appendChild(window.pin.renderPin(window.data.bookings[i]));
     }
 
     pinList.appendChild(fragment);
@@ -30,7 +30,7 @@
       deleteCard();
     }
 
-    fragment.appendChild(window.card.renderCard(window.data[index]));
+    fragment.appendChild(window.card.renderCard(window.data.bookings[index]));
     mapElement.appendChild(fragment);
 
     var currentCard = mapElement.querySelector('.map__card');

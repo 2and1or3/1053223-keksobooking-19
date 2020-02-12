@@ -31,8 +31,8 @@
 
     window.map.makePins();
     window.map.makeCard(0);
-    mainPin.removeEventListener('mousedown', onMainPinClick);
-    mainPin.removeEventListener('keydown', onMainPinPress);
+
+    mainPin.removeEventListener('keydown', window.drag.onMainPinPress);
   };
 
   var disableApp = function () {
@@ -52,20 +52,12 @@
 
   disableApp();
 
-  var onMainPinClick = function (evt) {
-    if (evt.button === 0) {
-      activateApp();
-    }
+  mainPin.addEventListener('mousedown', window.drag.onMainPinClick);
+
+  mainPin.addEventListener('keydown', window.drag.onMainPinPress);
+
+  window.main = {
+    activateApp: activateApp
   };
-
-  var onMainPinPress = function (evt) {
-    if (evt.keyCode === window.util.enterKey) {
-      activateApp();
-    }
-  };
-
-  mainPin.addEventListener('mousedown', onMainPinClick);
-
-  mainPin.addEventListener('keydown', onMainPinPress);
 
 })();
