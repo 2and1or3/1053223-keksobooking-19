@@ -20,6 +20,26 @@
   var mapEnableWidth = mapElement.offsetWidth - mainPin.offsetWidth;
 
 
+  var typeMap = {
+    bungalo: {
+      label: 'Бунгало',
+      minPrice: 0
+    },
+    flat: {
+      label: 'Квартира',
+      minPrice: 1000
+    },
+    house: {
+      label: 'Дом',
+      minPrice: 5000
+    },
+    palace: {
+      label: 'Дворец',
+      minPrice: 10000
+    }
+  };
+
+
   var getBookings = function () {
     var arr = [];
 
@@ -56,11 +76,12 @@
     return arr;
   };
 
-  var bookings = getBookings();
-
   window.data = {
-    bookings: bookings,
+    bookings: getBookings(),
     minCoordinateY: MIN_COORDINATE_Y,
-    maxCoordinateY: MAX_COORDINATE_Y
+    maxCoordinateY: MAX_COORDINATE_Y,
+    typeMap: typeMap,
+    mapElement: mapElement,
+    mainPin: mainPin
   };
 })();
