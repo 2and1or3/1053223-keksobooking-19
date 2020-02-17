@@ -1,14 +1,11 @@
 'use strict';
 
 (function () {
-  var mainPin = document.querySelector('.map__pin--main');
-
-
   var onMainPinClick = function (evt) {
     if (evt.button === 0) {
       window.main.activateApp();
 
-      var relativeParent = mainPin.offsetParent;
+      var relativeParent = window.data.mainPin.offsetParent;
 
       var limits = {
         left: relativeParent.getBoundingClientRect().left,
@@ -33,14 +30,14 @@
 
           shift.x = startCoords.x - moveEvt.clientX;
           startCoords.x = moveEvt.clientX;
-          mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
+          window.data.mainPin.style.left = (window.data.mainPin.offsetLeft - shift.x) + 'px';
           window.form.setAddress();
         }
 
         if ((moveEvt.pageY > limits.top) && (moveEvt.pageY < limits.bottom)) {
           shift.y = startCoords.y - moveEvt.clientY;
           startCoords.y = moveEvt.clientY;
-          mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+          window.data.mainPin.style.top = (window.data.mainPin.offsetTop - shift.y) + 'px';
           window.form.setAddress();
         }
       };
@@ -58,11 +55,10 @@
   };
 
   var onMainPinPress = function (evt) {
-    if (evt.keyCode === window.util.enterKey) {
+    if (window.util.isEnter(evt)) {
       window.main.activateApp();
     }
   };
-
 
   window.drag = {
     onMainPinClick: onMainPinClick,

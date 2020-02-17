@@ -1,14 +1,12 @@
 'use strict';
 (function () {
-  var mapElement = document.querySelector('.map');
   var fragment = document.createDocumentFragment();
   var pinList = document.querySelector('.map__pins');
-
 
   var makePins = function () {
 
     for (var i = 0; i < window.data.bookings.length; i++) {
-      fragment.appendChild(window.pin.renderPin(window.data.bookings[i]));
+      fragment.appendChild(window.renderPin(window.data.bookings[i]));
     }
 
     pinList.appendChild(fragment);
@@ -19,21 +17,21 @@
   };
 
   var onPressEsc = function (evt) {
-    if (evt.keyCode === window.util.escKey) {
+    if (window.util.isEsc(evt)) {
       deleteCard();
     }
   };
 
   var makeCard = function (index) {
 
-    if (mapElement.querySelector('.map__card')) {
+    if (window.data.mapElement.querySelector('.map__card')) {
       deleteCard();
     }
 
-    fragment.appendChild(window.card.renderCard(window.data.bookings[index]));
-    mapElement.appendChild(fragment);
+    fragment.appendChild(window.renderCard(window.data.bookings[index]));
+    window.data.mapElement.appendChild(fragment);
 
-    var currentCard = mapElement.querySelector('.map__card');
+    var currentCard = window.data.mapElement.querySelector('.map__card');
     var cardClose = currentCard.querySelector('.popup__close');
 
     cardClose.addEventListener('click', onCloseClick);
@@ -41,7 +39,7 @@
   };
 
   var deleteCard = function () {
-    var currentCard = mapElement.querySelector('.map__card');
+    var currentCard = window.data.mapElement.querySelector('.map__card');
     currentCard.remove();
     document.removeEventListener('keydown', onPressEsc);
   };
@@ -58,7 +56,7 @@
   });
 
   pinList.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === window.util.enterKey) {
+    if (window.util.isEnter(evt)) {
       showCard(evt);
     }
   });
@@ -67,5 +65,4 @@
     makePins: makePins,
     makeCard: makeCard
   };
-
 })();

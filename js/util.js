@@ -18,30 +18,42 @@
     return arr;
   };
 
-  var typeMap = {
-    bungalo: {
-      label: 'Бунгало',
-      minPrice: 0
-    },
-    flat: {
-      label: 'Квартира',
-      minPrice: 1000
-    },
-    house: {
-      label: 'Дом',
-      minPrice: 5000
-    },
-    palace: {
-      label: 'Дворец',
-      minPrice: 10000
+  var disabledChildren = function (parent) {
+    var children = parent.children;
+
+    for (var i = 0; i < children.length; i++) {
+      children[i].disabled = true;
     }
   };
 
+  var enabledChildren = function (parent) {
+    var children = parent.children;
+
+    for (var i = 0; i < children.length; i++) {
+      children[i].disabled = false;
+    }
+  };
+
+  var isEsc = function (evt) {
+    if (evt.keyCode === ESC_KEY) {
+      return true;
+    }
+    return false;
+  };
+
+  var isEnter = function (evt) {
+    if (evt.keyCode === ENTER_KEY) {
+      return true;
+    }
+    return false;
+  };
+
   window.util = {
-    enterKey: ENTER_KEY,
-    escKey: ESC_KEY,
+    isEsc: isEsc,
+    isEnter: isEnter,
     getRandom: getRandom,
     getRandomArray: getRandomArray,
-    typeMap: typeMap
+    disabledChildren: disabledChildren,
+    enabledChildren: enabledChildren
   };
 })();

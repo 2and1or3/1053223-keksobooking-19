@@ -1,29 +1,17 @@
 'use strict';
 (function () {
-  var mainPin = document.querySelector('.map__pin--main');
   var adForm = document.querySelector('.ad-form');
 
   var setAddress = function () {
     var addressInput = adForm.querySelector('#address');
-    var pinTop = parseInt(mainPin.style.top.replace('px', ''), 10) + mainPin.offsetHeight;
-    var pinLeft = parseInt(mainPin.style.left.replace('px', ''), 10) + Math.round(mainPin.offsetWidth / 2);
+    var pinTop = parseInt(window.data.mainPin.style.top.replace('px', ''), 10) + window.data.mainPin.offsetHeight;
+    var pinLeft = parseInt(window.data.mainPin.style.left.replace('px', ''), 10) + Math.round(window.data.mainPin.offsetWidth / 2);
 
     addressInput.value = pinTop + ', ' + pinLeft;
   };
 
   var roomControl = adForm.querySelector('#room_number');
   var guestControl = adForm.querySelector('#capacity');
-
-  var getCurrentGuest = function () {
-    var guests = guestControl.children;
-
-    for (var i = 0; i < guests.length; i++) {
-      if (guests[i].selected) {
-        return i;
-      }
-    }
-    return i;
-  };
 
   var deleteLastGuests = function (lastValue) {
     var guests = guestControl.children;
@@ -37,7 +25,8 @@
           guests[i].disabled = true;
         }
       }
-      if (lastRoomIndex < getCurrentGuest()) {
+
+      if (lastRoomIndex < guestControl.value) {
         guests[lastRoomIndex].selected = true;
       }
     } else {
@@ -49,8 +38,6 @@
       guests[guests.length - 1].selected = true;
     }
   };
-
-  guestControl.addEventListener('change', getCurrentGuest);
 
   roomControl.addEventListener('change', function () {
     var rooms = roomControl.children;
@@ -77,7 +64,7 @@
 
     for (var i = 0; i < types.length; i++) {
       if (types[i].selected) {
-        setMinPrice(window.util.typeMap[types[i].value].minPrice);
+        setMinPrice(window.data.typeMap[types[i].value].minPrice);
       }
     }
   });
@@ -100,7 +87,7 @@
   });
 
   window.form = {
-    setAddress: setAddress
+    setAddress: setAddress,
+    adForm: adForm
   };
-
 })();

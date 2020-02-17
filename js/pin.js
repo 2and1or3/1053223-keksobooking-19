@@ -17,8 +17,5 @@
     return pinElement;
   };
 
-  window.pin = {
-    renderPin: renderPin
-  };
-
+  window.renderPin = renderPin;
 })();
