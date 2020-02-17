@@ -3,6 +3,8 @@
   var fragment = document.createDocumentFragment();
   var pinList = document.querySelector('.map__pins');
 
+  var mapForm = window.data.mapElement.querySelector('.map__filters');
+
   var makePins = function () {
 
     for (var i = 0; i < window.data.bookings.length; i++) {
@@ -61,8 +63,23 @@
     }
   });
 
+  var mapEnable = function () {
+    window.data.mapElement.classList.remove('map--faded');
+    window.util.enabledChildren(mapForm);
+    makePins();
+    makeCard(0);
+  };
+
+  var mapDisable = function () {
+    if (!window.data.mapElement.classList.contains('map--faded')) {
+      window.data.mapElement.classList.add('map--faded');
+    }
+
+    window.util.disabledChildren(mapForm);
+  };
+
   window.map = {
-    makePins: makePins,
-    makeCard: makeCard
+    enable: mapEnable,
+    disable: mapDisable
   };
 })();

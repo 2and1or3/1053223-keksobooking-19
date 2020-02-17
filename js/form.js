@@ -86,8 +86,22 @@
     syncTimes(select, timeInControl);
   });
 
+  var formEnable = function () {
+    adForm.classList.remove('ad-form--disabled');
+    window.util.enabledChildren(adForm);
+  };
+
+  var formDisable = function () {
+    if (!adForm.classList.contains('ad-form--disabled')) {
+      adForm.classList.add('ad-form--disabled');
+    }
+
+    window.util.disabledChildren(adForm);
+  };
+
   window.form = {
     setAddress: setAddress,
-    adForm: adForm
+    enable: formEnable,
+    disable: formDisable
   };
 })();
