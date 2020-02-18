@@ -5,8 +5,9 @@
 
   var renderPin = function (pinData) {
     var pinElement = pinTemplate.cloneNode(true);
-    pinElement.style.left = pinData.offer.location.x;
-    pinElement.style.top = pinData.offer.location.y;
+
+    pinElement.style.left = pinData.location.x + 'px';
+    pinElement.style.top = pinData.location.y + 'px';
 
     pinElement.dataset.id = pinData.id;
 

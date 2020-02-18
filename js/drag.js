@@ -3,7 +3,9 @@
 (function () {
   var onMainPinClick = function (evt) {
     if (evt.button === 0) {
-      window.main.activateApp();
+      if (window.map.isDisable) {
+        window.main.activateApp();
+      }
 
       var relativeParent = window.data.mainPin.offsetParent;
 
