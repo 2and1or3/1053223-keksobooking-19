@@ -5,13 +5,26 @@
 
   var mapForm = window.data.mapElement.querySelector('.map__filters');
 
-  var makePins = function () {
+  var onSuccessMakePins = function (pinsData) {
 
-    for (var i = 0; i < window.data.bookings.length; i++) {
-      fragment.appendChild(window.renderPin(window.data.bookings[i]));
+    for (var i = 0; i < pinsData.length; i++) {
+      pinsData[i].id = i;
+      fragment.appendChild(window.renderPin(pinsData[i]));
     }
 
     pinList.appendChild(fragment);
+  };
+
+  var onErrorAlert = function (errorMessage) {
+    var errorElement = document.createElement('div');
+    errorElement.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: lightblue; color: white;';
+    errorElement.style.position = 'absolute';
+    errorElement.style.left = 0;
+    errorElement.style.right = 0;
+    errorElement.style.fontSize = '30px';
+
+    errorElement.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', errorElement);
   };
 
   var onCloseClick = function () {
@@ -63,11 +76,16 @@
     }
   });
 
+  var isDisable = true;
+
   var mapEnable = function () {
     window.data.mapElement.classList.remove('map--faded');
     window.util.enabledChildren(mapForm);
-    makePins();
+
+    window.backend.load(onSuccessMakePins, onErrorAlert);
+
     makeCard(0);
+    window.map.isDisable = false;
   };
 
   var mapDisable = function () {
@@ -75,11 +93,13 @@
       window.data.mapElement.classList.add('map--faded');
     }
 
+    window.map.isDisable = true;
     window.util.disabledChildren(mapForm);
   };
 
   window.map = {
     enable: mapEnable,
-    disable: mapDisable
+    disable: mapDisable,
+    isDisable: isDisable
   };
 })();
