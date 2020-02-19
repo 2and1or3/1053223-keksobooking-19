@@ -48,12 +48,41 @@
     return false;
   };
 
+  var onErrorAlert = function (errorMessage) {
+    var errorElement = document.createElement('div');
+    errorElement.classList.add('error-line');
+    errorElement.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: lightblue; color: white;';
+    errorElement.style.position = 'fixed';
+    errorElement.style.left = 0;
+    errorElement.style.right = 0;
+    errorElement.style.fontSize = '30px';
+
+    errorElement.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', errorElement);
+    window.main.disableApp();
+  };
+
+  var refreshPosition = function (startCoordsObject, element) {
+    element.style.left = startCoordsObject.x;
+    element.style.top = startCoordsObject.y;
+  };
+
+  var setStartPosition = function (element) {
+    return {
+      x: element.getBoundingClientRect().x - element.offsetParent.getBoundingClientRect().x + 'px',
+      y: element.getBoundingClientRect().y - element.offsetParent.getBoundingClientRect().y + 'px'
+    };
+  };
+
   window.util = {
     isEsc: isEsc,
     isEnter: isEnter,
     getRandom: getRandom,
     getRandomArray: getRandomArray,
     disabledChildren: disabledChildren,
-    enabledChildren: enabledChildren
+    enabledChildren: enabledChildren,
+    onErrorAlert: onErrorAlert,
+    setStartPosition: setStartPosition,
+    refreshPosition: refreshPosition
   };
 })();

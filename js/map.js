@@ -6,25 +6,13 @@
   var mapForm = window.data.mapElement.querySelector('.map__filters');
 
   var onSuccessMakePins = function (pinsData) {
-
+    window.data.bookings = pinsData;
     for (var i = 0; i < pinsData.length; i++) {
       pinsData[i].id = i;
       fragment.appendChild(window.renderPin(pinsData[i]));
     }
 
     pinList.appendChild(fragment);
-  };
-
-  var onErrorAlert = function (errorMessage) {
-    var errorElement = document.createElement('div');
-    errorElement.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: lightblue; color: white;';
-    errorElement.style.position = 'absolute';
-    errorElement.style.left = 0;
-    errorElement.style.right = 0;
-    errorElement.style.fontSize = '30px';
-
-    errorElement.textContent = errorMessage;
-    document.body.insertAdjacentElement('afterbegin', errorElement);
   };
 
   var onCloseClick = function () {
@@ -55,7 +43,11 @@
 
   var deleteCard = function () {
     var currentCard = window.data.mapElement.querySelector('.map__card');
-    currentCard.remove();
+
+    if (currentCard) {
+      currentCard.remove();
+    }
+
     document.removeEventListener('keydown', onPressEsc);
   };
 
@@ -78,19 +70,30 @@
 
   var isDisable = true;
 
+  var deletePins = function () {
+    var bookings = window.data.bookings;
+    var pins = window.data.mapElement.querySelectorAll('.map__pin');
+
+    for (var i = bookings.length; i > 0; i--) {
+      pins[i].remove();
+    }
+  };
+
   var mapEnable = function () {
     window.data.mapElement.classList.remove('map--faded');
     window.util.enabledChildren(mapForm);
 
-    window.backend.load(onSuccessMakePins, onErrorAlert);
+    window.backend.load(onSuccessMakePins, window.util.onErrorAlert);
 
-    makeCard(0);
     window.map.isDisable = false;
   };
 
   var mapDisable = function () {
     if (!window.data.mapElement.classList.contains('map--faded')) {
       window.data.mapElement.classList.add('map--faded');
+      deleteCard();
+      deletePins();
+      window.util.refreshPosition(window.data.mainPinStartCoords, window.data.mainPin);
     }
 
     window.map.isDisable = true;

@@ -95,13 +95,70 @@
     if (!adForm.classList.contains('ad-form--disabled')) {
       adForm.classList.add('ad-form--disabled');
     }
-
+    adForm.reset();
     window.util.disabledChildren(adForm);
   };
+
+  var successMessageTemplate = document.querySelector('#success').content
+    .querySelector('.success');
+
+  var errorMessageTemplate = document.querySelector('#error').content
+    .querySelector('.error');
+
+  var onPressEsc = function (evt) {
+    if (window.util.isEsc(evt)) {
+      document.body.querySelector('.' + window.form.messageDisplay).remove();
+      document.removeEventListener('keydown', onPressEsc);
+      document.removeEventListener('click', onClick);
+    }
+  };
+
+  var onClick = function () {
+    document.body.querySelector('.' + window.form.messageDisplay).remove();
+    document.removeEventListener('click', onClick);
+    document.removeEventListener('keydown', onPressEsc);
+  };
+
+  var displayMessage = function (template) {
+    var element = template.cloneNode(true);
+    window.form.messageDisplay = element.classList.value;
+
+    document.addEventListener('keydown', onPressEsc);
+
+    document.addEventListener('click', onClick);
+
+    document.body.querySelector('main').appendChild(element);
+  };
+
+  var onSuccessSend = function () {
+    window.main.disableApp();
+    displayMessage(successMessageTemplate);
+  };
+
+  var onErrorSend = function (errorMessage) {
+    window.util.onErrorAlert(errorMessage);
+    displayMessage(errorMessageTemplate);
+  };
+
+  var formReset = function () {
+    adForm.reset();
+    window.util.refreshPosition(window.data.mainPinStartCoords, window.data.mainPin);
+
+    setTimeout(window.form.setAddress, 10);
+  };
+
+  adForm.addEventListener('submit', function (evt) {
+    window.backend.save(new FormData(adForm), onSuccessSend, onErrorSend);
+
+    evt.preventDefault();
+  });
+
+  adForm.addEventListener('reset', formReset);
 
   window.form = {
     setAddress: setAddress,
     enable: formEnable,
-    disable: formDisable
+    disable: formDisable,
+    messageDisplay: null
   };
 })();
