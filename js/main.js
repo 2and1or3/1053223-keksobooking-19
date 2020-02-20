@@ -6,6 +6,10 @@
 
     window.map.enable();
 
+    if (document.querySelector('.error-line')) {
+      document.querySelector('.error-line').remove();
+    }
+
     window.data.mainPin.removeEventListener('keydown', window.drag.onMainPinPress);
   };
 
@@ -24,6 +28,7 @@
   window.data.mainPin.addEventListener('keydown', window.drag.onMainPinPress);
 
   window.main = {
-    activateApp: activateApp
+    activateApp: activateApp,
+    disableApp: disableApp
   };
 })();
