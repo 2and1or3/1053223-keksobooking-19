@@ -1,5 +1,14 @@
 'use strict';
 (function () {
+  var DEFAULT_FILTER = 'any';
+  var DEBOUNCE_INTERVAL = 500;
+
+  var PRICE_LIMITS = {
+    'low': 10000,
+    'middle': 50000,
+    'high': Infinity
+  };
+
   var fragment = document.createDocumentFragment();
   var pinList = document.querySelector('.map__pins');
   var bookings = [];
@@ -72,15 +81,54 @@
     }
   };
 
-  var getFilteredArray = function () {
-    var housingType = mapFilters.querySelector('#housing-type').value;
-    var filteredArray = bookings;
+  var getPriceRange = function (price) {
+    for (var key in PRICE_LIMITS) {
+      if (price < PRICE_LIMITS[key]) {
+        return key;
+      }
+    }
+    return null;
+  };
 
-    if (housingType !== 'any') {
+  var getFilteredArray = function () {
+    var filteredArray = bookings;
+    var housingType = mapFilters.querySelector('#housing-type').value;
+    var housingPrice = mapFilters.querySelector('#housing-price').value;
+    var housingRooms = mapFilters.querySelector('#housing-rooms').value;
+    var housingGuests = mapFilters.querySelector('#housing-guests').value;
+
+    var housingFeatureInputValues = Array.from(mapFilters.querySelector('#housing-features').querySelectorAll('input:checked'));
+    housingFeatureInputValues.forEach(function (it, ind) {
+      housingFeatureInputValues[ind] = it.value;
+    });
+
+    if (housingType !== DEFAULT_FILTER) {
       filteredArray = filteredArray.filter(function (it) {
         return it.offer.type === housingType;
       });
     }
+
+    if (housingPrice !== DEFAULT_FILTER) {
+      filteredArray = filteredArray.filter(function (it) {
+        return getPriceRange(it.offer.price) === housingPrice;
+      });
+    }
+
+    if (housingRooms !== DEFAULT_FILTER) {
+      filteredArray = filteredArray.filter(function (it) {
+        return it.offer.rooms === +housingRooms;
+      });
+    }
+
+    if (housingGuests !== DEFAULT_FILTER) {
+      filteredArray = filteredArray.filter(function (it) {
+        return it.offer.guests === +housingGuests;
+      });
+    }
+
+    filteredArray = filteredArray.filter(function (it) {
+      return window.util.isSubSet(housingFeatureInputValues, it.offer.features);
+    });
 
     return filteredArray;
   };
@@ -93,9 +141,17 @@
   };
 
   var mapFilters = document.querySelector('.map__filters');
+  var lastTimeout;
 
   mapFilters.addEventListener('change', function () {
-    mapUpdate();
+
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+
+    lastTimeout = window.setTimeout(function () {
+      mapUpdate();
+    }, DEBOUNCE_INTERVAL);
   });
 
   var mapEnable = function () {

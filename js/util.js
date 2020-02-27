@@ -74,6 +74,15 @@
     };
   };
 
+  var isSubSet = function (sub, set) {
+    set = Array.from(set);
+    sub = Array.from(sub);
+
+    return sub.every(function (elem) {
+      return set.includes(elem);
+    });
+  };
+
   window.util = {
     isEsc: isEsc,
     isEnter: isEnter,
@@ -83,6 +92,7 @@
     enabledChildren: enabledChildren,
     onAlertError: onAlertError,
     setStartPosition: setStartPosition,
-    refreshPosition: refreshPosition
+    refreshPosition: refreshPosition,
+    isSubSet: isSubSet
   };
 })();
