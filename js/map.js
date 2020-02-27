@@ -66,28 +66,32 @@
   var deletePins = function () {
     if (bookings) {
       var pins = window.data.mapElement.querySelectorAll('.map__pin');
-
-      for (var i = bookings.length; i > 0; i--) {
+      for (var i = pins.length - 1; i > 0; i--) {
         pins[i].remove();
       }
     }
   };
 
-  var getRank = function () {
+  var getFilteredArray = function () {
     var housingType = mapFilters.querySelector('#housing-type').value;
-    console.log(housingType);
+
+    var filteredArray = bookings.filter(function (it) {
+      return it.offer.type === housingType;
+    });
+
+    return filteredArray;
   };
 
   var mapUpdate = function () {
     deleteCard();
     deletePins();
-    getRank();
+
+    pinList.appendChild(window.getPins(getFilteredArray()));
   };
 
   var mapFilters = document.querySelector('.map__filters');
 
-  mapFilters.addEventListener('change', function (evt) {
-    // console.log(evt.target.value);
+  mapFilters.addEventListener('change', function () {
     mapUpdate();
   });
 

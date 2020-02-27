@@ -20,12 +20,21 @@
     return pinElement;
   };
 
+  var isIdSeted = false;
+
   var getPins = function (pinsData) {
-    for (var i = 0; i < PINS_LIMIT; i++) {
-      pinsData[i].id = i;
-      fragment.appendChild(renderPin(pinsData[i]));
+    for (var i = 0; i < pinsData.length; i++) {
+
+      if (!isIdSeted) {
+        pinsData[i].id = i;
+      }
+
+      if (i < PINS_LIMIT) {
+        fragment.appendChild(renderPin(pinsData[i]));
+      }
     }
 
+    isIdSeted = true;
     return fragment;
   };
 
