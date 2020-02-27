@@ -1,7 +1,9 @@
 'use strict';
 (function () {
+  var PINS_LIMIT = 5;
   var pinTemplate = document.querySelector('#pin').content
     .querySelector('button');
+  var fragment = document.createDocumentFragment();
 
   var renderPin = function (pinData) {
     var pinElement = pinTemplate.cloneNode(true);
@@ -18,5 +20,14 @@
     return pinElement;
   };
 
-  window.renderPin = renderPin;
+  var getPins = function (pinsData) {
+    for (var i = 0; i < PINS_LIMIT; i++) {
+      pinsData[i].id = i;
+      fragment.appendChild(renderPin(pinsData[i]));
+    }
+
+    return fragment;
+  };
+
+  window.getPins = getPins;
 })();

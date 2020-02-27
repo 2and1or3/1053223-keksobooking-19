@@ -48,7 +48,7 @@
     return false;
   };
 
-  var onErrorAlert = function (errorMessage) {
+  var onAlertError = function (errorMessage) {
     var errorElement = document.createElement('div');
     errorElement.classList.add('error-line');
     errorElement.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: lightblue; color: white;';
@@ -81,7 +81,7 @@
     getRandomArray: getRandomArray,
     disabledChildren: disabledChildren,
     enabledChildren: enabledChildren,
-    onErrorAlert: onErrorAlert,
+    onAlertError: onAlertError,
     setStartPosition: setStartPosition,
     refreshPosition: refreshPosition
   };

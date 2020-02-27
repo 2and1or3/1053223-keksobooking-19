@@ -2,17 +2,14 @@
 (function () {
   var fragment = document.createDocumentFragment();
   var pinList = document.querySelector('.map__pins');
+  var bookings = [];
 
   var mapForm = window.data.mapElement.querySelector('.map__filters');
 
   var onSuccessMakePins = function (pinsData) {
-    window.data.bookings = pinsData;
-    for (var i = 0; i < pinsData.length; i++) {
-      pinsData[i].id = i;
-      fragment.appendChild(window.renderPin(pinsData[i]));
-    }
+    pinList.appendChild(window.getPins(pinsData));
 
-    pinList.appendChild(fragment);
+    bookings = pinsData.slice();
   };
 
   var onCloseClick = function () {
@@ -26,16 +23,12 @@
   };
 
   var makeCard = function (index) {
+    deleteCard();
 
-    if (window.data.mapElement.querySelector('.map__card')) {
-      deleteCard();
-    }
-
-    fragment.appendChild(window.renderCard(window.data.bookings[index]));
+    fragment.appendChild(window.renderCard(bookings[index]));
     window.data.mapElement.appendChild(fragment);
 
-    var currentCard = window.data.mapElement.querySelector('.map__card');
-    var cardClose = currentCard.querySelector('.popup__close');
+    var cardClose = window.data.mapElement.querySelector('.map__card .popup__close');
 
     cardClose.addEventListener('click', onCloseClick);
     document.addEventListener('keydown', onPressEsc);
@@ -71,19 +64,38 @@
   var isDisable = true;
 
   var deletePins = function () {
-    var bookings = window.data.bookings;
-    var pins = window.data.mapElement.querySelectorAll('.map__pin');
+    if (bookings) {
+      var pins = window.data.mapElement.querySelectorAll('.map__pin');
 
-    for (var i = bookings.length; i > 0; i--) {
-      pins[i].remove();
+      for (var i = bookings.length; i > 0; i--) {
+        pins[i].remove();
+      }
     }
   };
+
+  var getRank = function () {
+    var housingType = mapFilters.querySelector('#housing-type').value;
+    console.log(housingType);
+  };
+
+  var mapUpdate = function () {
+    deleteCard();
+    deletePins();
+    getRank();
+  };
+
+  var mapFilters = document.querySelector('.map__filters');
+
+  mapFilters.addEventListener('change', function (evt) {
+    // console.log(evt.target.value);
+    mapUpdate();
+  });
 
   var mapEnable = function () {
     window.data.mapElement.classList.remove('map--faded');
     window.util.enabledChildren(mapForm);
 
-    window.backend.load(onSuccessMakePins, window.util.onErrorAlert);
+    window.backend.load(onSuccessMakePins, window.util.onAlertError);
 
     window.map.isDisable = false;
   };
