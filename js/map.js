@@ -74,10 +74,13 @@
 
   var getFilteredArray = function () {
     var housingType = mapFilters.querySelector('#housing-type').value;
+    var filteredArray = bookings;
 
-    var filteredArray = bookings.filter(function (it) {
-      return it.offer.type === housingType;
-    });
+    if (housingType !== 'any') {
+      filteredArray = filteredArray.filter(function (it) {
+        return it.offer.type === housingType;
+      });
+    }
 
     return filteredArray;
   };
