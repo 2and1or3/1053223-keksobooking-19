@@ -48,7 +48,7 @@
     return false;
   };
 
-  var onErrorAlert = function (errorMessage) {
+  var onAlertError = function (errorMessage) {
     var errorElement = document.createElement('div');
     errorElement.classList.add('error-line');
     errorElement.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: lightblue; color: white;';
@@ -74,6 +74,15 @@
     };
   };
 
+  var isSubSet = function (sub, set) {
+    set = Array.from(set);
+    sub = Array.from(sub);
+
+    return sub.every(function (elem) {
+      return set.includes(elem);
+    });
+  };
+
   window.util = {
     isEsc: isEsc,
     isEnter: isEnter,
@@ -81,8 +90,9 @@
     getRandomArray: getRandomArray,
     disabledChildren: disabledChildren,
     enabledChildren: enabledChildren,
-    onErrorAlert: onErrorAlert,
+    onAlertError: onAlertError,
     setStartPosition: setStartPosition,
-    refreshPosition: refreshPosition
+    refreshPosition: refreshPosition,
+    isSubSet: isSubSet
   };
 })();

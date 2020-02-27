@@ -107,21 +107,21 @@
 
   var onPressEsc = function (evt) {
     if (window.util.isEsc(evt)) {
-      document.body.querySelector('.' + window.form.messageDisplay).remove();
+      document.body.querySelector('.modal-message').remove();
       document.removeEventListener('keydown', onPressEsc);
       document.removeEventListener('click', onClick);
     }
   };
 
   var onClick = function () {
-    document.body.querySelector('.' + window.form.messageDisplay).remove();
+    document.body.querySelector('.modal-message').remove();
     document.removeEventListener('click', onClick);
     document.removeEventListener('keydown', onPressEsc);
   };
 
   var displayMessage = function (template) {
     var element = template.cloneNode(true);
-    window.form.messageDisplay = element.classList.value;
+    element.classList.add('modal-message');
 
     document.addEventListener('keydown', onPressEsc);
 
@@ -130,13 +130,13 @@
     document.body.querySelector('main').appendChild(element);
   };
 
-  var onSuccessSend = function () {
+  var onSendSuccess = function () {
     window.main.disableApp();
     displayMessage(successMessageTemplate);
   };
 
-  var onErrorSend = function (errorMessage) {
-    window.util.onErrorAlert(errorMessage);
+  var onSendError = function (errorMessage) {
+    window.util.onAlertError(errorMessage);
     displayMessage(errorMessageTemplate);
   };
 
@@ -148,7 +148,7 @@
   };
 
   adForm.addEventListener('submit', function (evt) {
-    window.backend.save(new FormData(adForm), onSuccessSend, onErrorSend);
+    window.backend.save(new FormData(adForm), onSendSuccess, onSendError);
 
     evt.preventDefault();
   });

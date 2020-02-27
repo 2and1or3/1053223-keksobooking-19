@@ -27,7 +27,6 @@
   };
 
   window.data = {
-    bookings: [],
     minCoordinateY: MIN_COORDINATE_Y,
     maxCoordinateY: MAX_COORDINATE_Y,
     typeMap: typeMap,

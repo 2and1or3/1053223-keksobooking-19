@@ -1,18 +1,24 @@
 'use strict';
 (function () {
+  var DEFAULT_FILTER = 'any';
+  var DEBOUNCE_INTERVAL = 500;
+
+  var PRICE_LIMITS = {
+    'low': 10000,
+    'middle': 50000,
+    'high': Infinity
+  };
+
   var fragment = document.createDocumentFragment();
   var pinList = document.querySelector('.map__pins');
+  var bookings = [];
 
   var mapForm = window.data.mapElement.querySelector('.map__filters');
 
   var onSuccessMakePins = function (pinsData) {
-    window.data.bookings = pinsData;
-    for (var i = 0; i < pinsData.length; i++) {
-      pinsData[i].id = i;
-      fragment.appendChild(window.renderPin(pinsData[i]));
-    }
+    pinList.appendChild(window.getPins(pinsData));
 
-    pinList.appendChild(fragment);
+    bookings = pinsData.slice();
   };
 
   var onCloseClick = function () {
@@ -26,16 +32,12 @@
   };
 
   var makeCard = function (index) {
+    deleteCard();
 
-    if (window.data.mapElement.querySelector('.map__card')) {
-      deleteCard();
-    }
-
-    fragment.appendChild(window.renderCard(window.data.bookings[index]));
+    fragment.appendChild(window.renderCard(bookings[index]));
     window.data.mapElement.appendChild(fragment);
 
-    var currentCard = window.data.mapElement.querySelector('.map__card');
-    var cardClose = currentCard.querySelector('.popup__close');
+    var cardClose = window.data.mapElement.querySelector('.map__card .popup__close');
 
     cardClose.addEventListener('click', onCloseClick);
     document.addEventListener('keydown', onPressEsc);
@@ -71,19 +73,92 @@
   var isDisable = true;
 
   var deletePins = function () {
-    var bookings = window.data.bookings;
-    var pins = window.data.mapElement.querySelectorAll('.map__pin');
-
-    for (var i = bookings.length; i > 0; i--) {
-      pins[i].remove();
+    if (bookings) {
+      var pins = window.data.mapElement.querySelectorAll('.map__pin');
+      for (var i = pins.length - 1; i > 0; i--) {
+        pins[i].remove();
+      }
     }
   };
+
+  var getPriceRange = function (price) {
+    for (var key in PRICE_LIMITS) {
+      if (price < PRICE_LIMITS[key]) {
+        return key;
+      }
+    }
+    return null;
+  };
+
+  var getFilteredArray = function () {
+    var filteredArray = bookings;
+    var housingType = mapFilters.querySelector('#housing-type').value;
+    var housingPrice = mapFilters.querySelector('#housing-price').value;
+    var housingRooms = mapFilters.querySelector('#housing-rooms').value;
+    var housingGuests = mapFilters.querySelector('#housing-guests').value;
+
+    var housingFeatureInputValues = Array.from(mapFilters.querySelector('#housing-features').querySelectorAll('input:checked'));
+    housingFeatureInputValues.forEach(function (it, ind) {
+      housingFeatureInputValues[ind] = it.value;
+    });
+
+    if (housingType !== DEFAULT_FILTER) {
+      filteredArray = filteredArray.filter(function (it) {
+        return it.offer.type === housingType;
+      });
+    }
+
+    if (housingPrice !== DEFAULT_FILTER) {
+      filteredArray = filteredArray.filter(function (it) {
+        return getPriceRange(it.offer.price) === housingPrice;
+      });
+    }
+
+    if (housingRooms !== DEFAULT_FILTER) {
+      filteredArray = filteredArray.filter(function (it) {
+        return it.offer.rooms === +housingRooms;
+      });
+    }
+
+    if (housingGuests !== DEFAULT_FILTER) {
+      filteredArray = filteredArray.filter(function (it) {
+        return it.offer.guests === +housingGuests;
+      });
+    }
+
+    filteredArray = filteredArray.filter(function (it) {
+      return window.util.isSubSet(housingFeatureInputValues, it.offer.features);
+    });
+
+    return filteredArray;
+  };
+
+  var mapUpdate = function () {
+    deleteCard();
+    deletePins();
+
+    pinList.appendChild(window.getPins(getFilteredArray()));
+  };
+
+  var mapFilters = document.querySelector('.map__filters');
+  var lastTimeout;
+
+  mapFilters.addEventListener('change', function () {
+
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+
+    lastTimeout = window.setTimeout(function () {
+      mapUpdate();
+    }, DEBOUNCE_INTERVAL);
+  });
 
   var mapEnable = function () {
     window.data.mapElement.classList.remove('map--faded');
     window.util.enabledChildren(mapForm);
 
-    window.backend.load(onSuccessMakePins, window.util.onErrorAlert);
+    window.backend.load(onSuccessMakePins, window.util.onAlertError);
 
     window.map.isDisable = false;
   };
