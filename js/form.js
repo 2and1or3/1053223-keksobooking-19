@@ -2,10 +2,29 @@
 (function () {
   var adForm = document.querySelector('.ad-form');
 
+  var typeMap = {
+    bungalo: {
+      label: 'Бунгало',
+      minPrice: 0
+    },
+    flat: {
+      label: 'Квартира',
+      minPrice: 1000
+    },
+    house: {
+      label: 'Дом',
+      minPrice: 5000
+    },
+    palace: {
+      label: 'Дворец',
+      minPrice: 10000
+    }
+  };
+
   var setAddress = function () {
     var addressInput = adForm.querySelector('#address');
-    var pinTop = parseInt(window.data.mainPin.style.top.replace('px', ''), 10) + window.data.mainPin.offsetHeight;
-    var pinLeft = parseInt(window.data.mainPin.style.left.replace('px', ''), 10) + Math.round(window.data.mainPin.offsetWidth / 2);
+    var pinTop = parseInt(window.map.mainPin.style.top.replace('px', ''), 10) + window.map.mainPin.offsetHeight;
+    var pinLeft = parseInt(window.map.mainPin.style.left.replace('px', ''), 10) + Math.round(window.map.mainPin.offsetWidth / 2);
 
     addressInput.value = pinTop + ', ' + pinLeft;
   };
@@ -64,7 +83,7 @@
 
     for (var i = 0; i < types.length; i++) {
       if (types[i].selected) {
-        setMinPrice(window.data.typeMap[types[i].value].minPrice);
+        setMinPrice(typeMap[types[i].value].minPrice);
       }
     }
   });
@@ -136,21 +155,19 @@
   };
 
   var onSendError = function (errorMessage) {
-    window.util.onAlertError(errorMessage);
+    window.util.showErrorMessage(errorMessage);
     displayMessage(errorMessageTemplate);
   };
 
   var formReset = function () {
     adForm.reset();
-    window.util.refreshPosition(window.data.mainPinStartCoords, window.data.mainPin);
-
-    setTimeout(window.form.setAddress, 10);
+    window.util.refreshPosition(window.map.mainPinStartCoords, window.map.mainPin);
+    window.form.setAddress();
   };
 
   adForm.addEventListener('submit', function (evt) {
-    window.backend.save(new FormData(adForm), onSendSuccess, onSendError);
-
     evt.preventDefault();
+    window.backend.save(new FormData(adForm), onSendSuccess, onSendError);
   });
 
   adForm.addEventListener('reset', formReset);
@@ -159,6 +176,7 @@
     setAddress: setAddress,
     enable: formEnable,
     disable: formDisable,
-    messageDisplay: null
+    messageDisplay: null,
+    typeMap: typeMap
   };
 })();

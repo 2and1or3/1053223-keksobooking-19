@@ -18,7 +18,7 @@
     cardTitle.textContent = cardData.offer.title;
     cardAddress.textContent = cardData.offer.address;
     cardPrice.textContent = cardData.offer.price + '₽/ночь';
-    cardType.textContent = window.data.typeMap[cardData.offer.type].label;
+    cardType.textContent = window.form.typeMap[cardData.offer.type].label;
     cardCapacity.textContent = cardData.offer.rooms + ' комнаты для ' + cardData.offer.guests + ' гостей';
     cardTime.textContent = 'Заезд после ' + cardData.offer.checkin + ', выезд до ' + cardData.offer.checkout;
     cardDescription.textContent = cardData.offer.description;

@@ -3,6 +3,7 @@
 (function () {
   var ENTER_KEY = 13;
   var ESC_KEY = 27;
+  var DEBOUNCE_INTERVAL = 500;
 
   var getRandom = function (max) {
     return Math.floor(Math.random() * Math.floor(++max));
@@ -48,7 +49,7 @@
     return false;
   };
 
-  var onAlertError = function (errorMessage) {
+  var showErrorMessage = function (errorMessage) {
     var errorElement = document.createElement('div');
     errorElement.classList.add('error-line');
     errorElement.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: lightblue; color: white;';
@@ -83,6 +84,20 @@
     });
   };
 
+  var debounce = function (cb) {
+    var lastTimeout = null;
+
+    return function () {
+      var parameters = arguments;
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(function () {
+        cb.apply(null, parameters);
+      }, DEBOUNCE_INTERVAL);
+    };
+  };
+
   window.util = {
     isEsc: isEsc,
     isEnter: isEnter,
@@ -90,9 +105,10 @@
     getRandomArray: getRandomArray,
     disabledChildren: disabledChildren,
     enabledChildren: enabledChildren,
-    onAlertError: onAlertError,
+    showErrorMessage: showErrorMessage,
     setStartPosition: setStartPosition,
     refreshPosition: refreshPosition,
-    isSubSet: isSubSet
+    isSubSet: isSubSet,
+    debounce: debounce
   };
 })();
