@@ -1,13 +1,13 @@
 'use strict';
 
 (function () {
+  var TIMEOUT_IN_MS = 5000;
   var GET_URL = 'https://js.dump.academy/keksobooking/data';
   var POST_URL = 'https://js.dump.academy/keksobooking';
 
   var statusCode = {
     OK: 200
   };
-  var TIMEOUT_IN_MS = 5000;
 
   var makeRequest = function (success, error) {
     var xhr = new XMLHttpRequest();

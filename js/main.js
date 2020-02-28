@@ -10,7 +10,7 @@
       document.querySelector('.error-line').remove();
     }
 
-    window.data.mainPin.removeEventListener('keydown', window.drag.onMainPinPress);
+    window.map.mainPin.removeEventListener('keydown', window.drag.onMainPinPress);
   };
 
   var disableApp = function () {
@@ -23,9 +23,9 @@
 
   disableApp();
 
-  window.data.mainPin.addEventListener('mousedown', window.drag.onMainPinClick);
+  window.map.mainPin.addEventListener('mousedown', window.drag.onMainPinClick);
 
-  window.data.mainPin.addEventListener('keydown', window.drag.onMainPinPress);
+  window.map.mainPin.addEventListener('keydown', window.drag.onMainPinPress);
 
   window.main = {
     activateApp: activateApp,
