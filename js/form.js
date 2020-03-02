@@ -1,6 +1,8 @@
 'use strict';
 (function () {
+  var EMPTY_PHOTO_SRC = 'img/muffin-grey.svg';
   var adForm = document.querySelector('.ad-form');
+  var addressInput = adForm.querySelector('#address');
 
   var typeMap = {
     bungalo: {
@@ -22,36 +24,35 @@
   };
 
   var setAddress = function () {
-    var addressInput = adForm.querySelector('#address');
     var pinTop = parseInt(window.map.mainPin.style.top.replace('px', ''), 10) + window.map.mainPin.offsetHeight;
     var pinLeft = parseInt(window.map.mainPin.style.left.replace('px', ''), 10) + Math.round(window.map.mainPin.offsetWidth / 2);
 
-    addressInput.value = pinTop + ', ' + pinLeft;
+    addressInput.value = pinLeft + ', ' + pinTop;
   };
 
   var roomControl = adForm.querySelector('#room_number');
   var guestControl = adForm.querySelector('#capacity');
 
-  var deleteLastGuests = function (lastValue) {
-    var guests = guestControl.children;
+  var onRoomChange = function (lastValue) {
+    var guests = Array.from(guestControl.children);
     var lastRoomIndex = parseInt(lastValue, 10) - 1;
 
     if (lastValue !== '100') {
-      for (var i = 0; i < guests.length; i++) {
+      guests.forEach(function (guest, i) {
         if (i <= lastRoomIndex) {
-          guests[i].disabled = false;
+          guest.disabled = false;
         } else {
-          guests[i].disabled = true;
+          guest.disabled = true;
         }
-      }
+      });
 
       if (lastRoomIndex < guestControl.value) {
         guests[lastRoomIndex].selected = true;
       }
     } else {
-      for (var j = 0; j < guests.length; j++) {
-        guests[j].disabled = true;
-      }
+      guests.forEach(function (guest) {
+        guest.disabled = true;
+      });
 
       guests[guests.length - 1].disabled = false;
       guests[guests.length - 1].selected = true;
@@ -59,33 +60,26 @@
   };
 
   roomControl.addEventListener('change', function () {
-    var rooms = roomControl.children;
-
-    for (var i = 0; i < rooms.length; i++) {
-      if (rooms[i].selected) {
-        deleteLastGuests(rooms[i].value);
-      }
-    }
+    resetOptions(roomControl, onRoomChange);
   });
 
   var priceControl = adForm.querySelector('#price');
   var typeControl = adForm.querySelector('#type');
 
-  var setMinPrice = function (price) {
-    if ((priceControl.value < price) && priceControl.value !== '') {
-      priceControl.value = price;
-    }
+  var onTypeChange = function (controlValue) {
+    var price = typeMap[controlValue].minPrice;
+
     priceControl.setAttribute('min', price);
+    priceControl.setAttribute('placeholder', price);
+  };
+
+  var resetOptions = function (control, cb) {
+    var selected = control.querySelector('option:checked');
+    cb(selected.value);
   };
 
   typeControl.addEventListener('change', function () {
-    var types = typeControl.children;
-
-    for (var i = 0; i < types.length; i++) {
-      if (types[i].selected) {
-        setMinPrice(typeMap[types[i].value].minPrice);
-      }
-    }
+    resetOptions(typeControl, onTypeChange);
   });
 
   var timeInControl = adForm.querySelector('#timein');
@@ -115,6 +109,8 @@
       adForm.classList.add('ad-form--disabled');
     }
     adForm.reset();
+    resetOptions(typeControl, onTypeChange);
+    resetPreview(window.previews);
     window.util.disabledChildren(adForm);
   };
 
@@ -159,18 +155,22 @@
     displayMessage(errorMessageTemplate);
   };
 
-  var formReset = function () {
-    adForm.reset();
-    window.util.refreshPosition(window.map.mainPinStartCoords, window.map.mainPin);
-    window.form.setAddress();
-  };
-
   adForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
     window.backend.save(new FormData(adForm), onSendSuccess, onSendError);
   });
 
-  adForm.addEventListener('reset', formReset);
+  adForm.addEventListener('reset', function () {
+    if (window.main) {
+      window.main.disableApp();
+    }
+  });
+
+  var resetPreview = function (arr) {
+    arr.forEach(function (preview) {
+      preview.src = EMPTY_PHOTO_SRC;
+    });
+  };
 
   window.form = {
     setAddress: setAddress,

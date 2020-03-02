@@ -5,34 +5,20 @@
   var ESC_KEY = 27;
   var DEBOUNCE_INTERVAL = 500;
 
-  var getRandom = function (max) {
-    return Math.floor(Math.random() * Math.floor(++max));
-  };
-
-  var getRandomArray = function (array, max) {
-    var arr = [];
-
-    for (var i = 0; i < getRandom(max); i++) {
-      arr[i] = array[i];
-    }
-
-    return arr;
-  };
-
   var disabledChildren = function (parent) {
-    var children = parent.children;
+    var children = Array.from(parent.children);
 
-    for (var i = 0; i < children.length; i++) {
-      children[i].disabled = true;
-    }
+    children.forEach(function (child) {
+      child.disabled = true;
+    });
   };
 
   var enabledChildren = function (parent) {
-    var children = parent.children;
+    var children = Array.from(parent.children);
 
-    for (var i = 0; i < children.length; i++) {
-      children[i].disabled = false;
-    }
+    children.forEach(function (child) {
+      child.disabled = false;
+    });
   };
 
   var isEsc = function (evt) {
@@ -101,8 +87,6 @@
   window.util = {
     isEsc: isEsc,
     isEnter: isEnter,
-    getRandom: getRandom,
-    getRandomArray: getRandomArray,
     disabledChildren: disabledChildren,
     enabledChildren: enabledChildren,
     showErrorMessage: showErrorMessage,

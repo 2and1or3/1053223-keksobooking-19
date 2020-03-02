@@ -23,6 +23,11 @@
   var getPins = function (pinsData) {
     var maxIndex = pinsData.length > PINS_LIMIT ? PINS_LIMIT : pinsData.length;
     for (var i = 0; i < maxIndex; i++) {
+
+      if (!pinsData[i].offer) {
+        maxIndex++;
+        continue;
+      }
       fragment.appendChild(renderPin(pinsData[i]));
     }
 
