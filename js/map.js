@@ -61,8 +61,8 @@
     document.removeEventListener('keydown', onPressEsc);
   };
 
-  var lastPin = null;
   var resetActivePin = function () {
+    var lastPin = document.querySelector('.map__pin--active');
     if (lastPin) {
       lastPin.classList.remove('map__pin--active');
     }
@@ -71,9 +71,8 @@
   var showCard = function (evt) {
     if (evt.target.closest('.map__pin') && !evt.target.closest('.map__pin--main')) {
       resetActivePin();
-      lastPin = evt.target.closest('.map__pin');
-      var currentPinIndex = lastPin.dataset.id;
-      lastPin.classList.add('map__pin--active');
+      var currentPinIndex = evt.target.closest('.map__pin').dataset.id;
+      evt.target.closest('.map__pin').classList.add('map__pin--active');
       makeCard(currentPinIndex);
     }
   };

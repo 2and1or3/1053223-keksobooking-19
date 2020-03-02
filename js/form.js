@@ -33,7 +33,7 @@
   var roomControl = adForm.querySelector('#room_number');
   var guestControl = adForm.querySelector('#capacity');
 
-  var deleteLastGuests = function (lastValue) {
+  var onRoomChange = function (lastValue) {
     var guests = Array.from(guestControl.children);
     var lastRoomIndex = parseInt(lastValue, 10) - 1;
 
@@ -60,36 +60,27 @@
   };
 
   roomControl.addEventListener('change', function () {
-    var rooms = roomControl.children;
-
-    for (var i = 0; i < rooms.length; i++) {
-      if (rooms[i].selected) {
-        deleteLastGuests(rooms[i].value);
-        break;
-      }
-    }
+    resetOptions(roomControl, onRoomChange);
   });
 
   var priceControl = adForm.querySelector('#price');
   var typeControl = adForm.querySelector('#type');
 
-  var setMinPrice = function (price) {
+  var onTypeChange = function (controlValue) {
+    var price = typeMap[controlValue].minPrice;
+
     priceControl.setAttribute('min', price);
     priceControl.setAttribute('placeholder', price);
   };
 
-  var resetPlaceholder = function () {
-    var types = typeControl.children;
-
-    for (var i = 0; i < types.length; i++) {
-      if (types[i].selected) {
-        setMinPrice(typeMap[types[i].value].minPrice);
-        break;
-      }
-    }
+  var resetOptions = function (control, cb) {
+    var selected = control.querySelector('option:checked');
+    cb(selected.value);
   };
 
-  typeControl.addEventListener('change', resetPlaceholder);
+  typeControl.addEventListener('change', function () {
+    resetOptions(typeControl, onTypeChange);
+  });
 
   var timeInControl = adForm.querySelector('#timein');
   var timeOutControl = adForm.querySelector('#timeout');
@@ -118,7 +109,7 @@
       adForm.classList.add('ad-form--disabled');
     }
     adForm.reset();
-    resetPlaceholder();
+    resetOptions(typeControl, onTypeChange);
     resetPreview(window.previews);
     window.util.disabledChildren(adForm);
   };
