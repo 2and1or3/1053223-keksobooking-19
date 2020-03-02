@@ -14,7 +14,7 @@
   var mainPin = document.querySelector('.map__pin--main');
   var bookings = [];
 
-  var mapForm = mapElement.querySelector('.map__filters');
+  var mapFilters = mapElement.querySelector('.map__filters');
 
   var onSuccessLoad = function (pinsData) {
     pinsData.forEach(function (pin, index) {
@@ -24,15 +24,18 @@
     pinList.appendChild(window.getPins(pinsData));
 
     bookings = pinsData.slice();
+    window.util.enabledChildren(mapFilters);
   };
 
   var onCloseClick = function () {
     deleteCard();
+    resetActivePin();
   };
 
   var onPressEsc = function (evt) {
     if (window.util.isEsc(evt)) {
       deleteCard();
+      resetActivePin();
     }
   };
 
@@ -58,9 +61,19 @@
     document.removeEventListener('keydown', onPressEsc);
   };
 
+  var lastPin = null;
+  var resetActivePin = function () {
+    if (lastPin) {
+      lastPin.classList.remove('map__pin--active');
+    }
+  };
+
   var showCard = function (evt) {
     if (evt.target.closest('.map__pin') && !evt.target.closest('.map__pin--main')) {
-      var currentPinIndex = evt.target.closest('.map__pin').dataset.id;
+      resetActivePin();
+      lastPin = evt.target.closest('.map__pin');
+      var currentPinIndex = lastPin.dataset.id;
+      lastPin.classList.add('map__pin--active');
       makeCard(currentPinIndex);
     }
   };
@@ -92,8 +105,6 @@
     }
     return null;
   };
-
-  var mapFilters = document.querySelector('.map__filters');
 
   var housingType = mapFilters.querySelector('#housing-type');
   var housingPrice = mapFilters.querySelector('#housing-price');
@@ -142,7 +153,6 @@
 
   var mapEnable = function () {
     mapElement.classList.remove('map--faded');
-    window.util.enabledChildren(mapForm);
 
     window.backend.load(onSuccessLoad, window.util.showErrorMessage);
 
@@ -154,11 +164,12 @@
       mapElement.classList.add('map--faded');
       deleteCard();
       deletePins();
+      mapFilters.reset();
       window.util.refreshPosition(window.map.mainPinStartCoords, mainPin);
     }
 
     window.map.isDisable = true;
-    window.util.disabledChildren(mapForm);
+    window.util.disabledChildren(mapFilters);
   };
 
   window.map = {

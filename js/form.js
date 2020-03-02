@@ -1,5 +1,6 @@
 'use strict';
 (function () {
+  var EMPTY_PHOTO_SRC = 'img/muffin-grey.svg';
   var adForm = document.querySelector('.ad-form');
 
   var typeMap = {
@@ -26,7 +27,7 @@
     var pinTop = parseInt(window.map.mainPin.style.top.replace('px', ''), 10) + window.map.mainPin.offsetHeight;
     var pinLeft = parseInt(window.map.mainPin.style.left.replace('px', ''), 10) + Math.round(window.map.mainPin.offsetWidth / 2);
 
-    addressInput.value = pinTop + ', ' + pinLeft;
+    addressInput.value = pinLeft + ', ' + pinTop;
   };
 
   var roomControl = adForm.querySelector('#room_number');
@@ -72,13 +73,11 @@
   var typeControl = adForm.querySelector('#type');
 
   var setMinPrice = function (price) {
-    if ((priceControl.value < price) && priceControl.value !== '') {
-      priceControl.value = price;
-    }
     priceControl.setAttribute('min', price);
+    priceControl.setAttribute('placeholder', price);
   };
 
-  typeControl.addEventListener('change', function () {
+  var resetPlaceholder = function () {
     var types = typeControl.children;
 
     for (var i = 0; i < types.length; i++) {
@@ -86,7 +85,9 @@
         setMinPrice(typeMap[types[i].value].minPrice);
       }
     }
-  });
+  };
+
+  typeControl.addEventListener('change', resetPlaceholder);
 
   var timeInControl = adForm.querySelector('#timein');
   var timeOutControl = adForm.querySelector('#timeout');
@@ -115,6 +116,8 @@
       adForm.classList.add('ad-form--disabled');
     }
     adForm.reset();
+    resetPlaceholder();
+    resetPreview(window.previews);
     window.util.disabledChildren(adForm);
   };
 
@@ -159,18 +162,22 @@
     displayMessage(errorMessageTemplate);
   };
 
-  var formReset = function () {
-    adForm.reset();
-    window.util.refreshPosition(window.map.mainPinStartCoords, window.map.mainPin);
-    window.form.setAddress();
-  };
-
   adForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
     window.backend.save(new FormData(adForm), onSendSuccess, onSendError);
   });
 
-  adForm.addEventListener('reset', formReset);
+  adForm.addEventListener('reset', function () {
+    if (window.main) {
+      window.main.disableApp();
+    }
+  });
+
+  var resetPreview = function (arr) {
+    arr.forEach(function (preview) {
+      preview.src = EMPTY_PHOTO_SRC;
+    });
+  };
 
   window.form = {
     setAddress: setAddress,
