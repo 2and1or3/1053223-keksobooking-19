@@ -2,6 +2,7 @@
 (function () {
   var EMPTY_PHOTO_SRC = 'img/muffin-grey.svg';
   var adForm = document.querySelector('.ad-form');
+  var addressInput = adForm.querySelector('#address');
 
   var typeMap = {
     bungalo: {
@@ -23,7 +24,6 @@
   };
 
   var setAddress = function () {
-    var addressInput = adForm.querySelector('#address');
     var pinTop = parseInt(window.map.mainPin.style.top.replace('px', ''), 10) + window.map.mainPin.offsetHeight;
     var pinLeft = parseInt(window.map.mainPin.style.left.replace('px', ''), 10) + Math.round(window.map.mainPin.offsetWidth / 2);
 
@@ -34,25 +34,25 @@
   var guestControl = adForm.querySelector('#capacity');
 
   var deleteLastGuests = function (lastValue) {
-    var guests = guestControl.children;
+    var guests = Array.from(guestControl.children);
     var lastRoomIndex = parseInt(lastValue, 10) - 1;
 
     if (lastValue !== '100') {
-      for (var i = 0; i < guests.length; i++) {
+      guests.forEach(function (guest, i) {
         if (i <= lastRoomIndex) {
-          guests[i].disabled = false;
+          guest.disabled = false;
         } else {
-          guests[i].disabled = true;
+          guest.disabled = true;
         }
-      }
+      });
 
       if (lastRoomIndex < guestControl.value) {
         guests[lastRoomIndex].selected = true;
       }
     } else {
-      for (var j = 0; j < guests.length; j++) {
-        guests[j].disabled = true;
-      }
+      guests.forEach(function (guest) {
+        guest.disabled = true;
+      });
 
       guests[guests.length - 1].disabled = false;
       guests[guests.length - 1].selected = true;
@@ -65,6 +65,7 @@
     for (var i = 0; i < rooms.length; i++) {
       if (rooms[i].selected) {
         deleteLastGuests(rooms[i].value);
+        break;
       }
     }
   });
@@ -83,6 +84,7 @@
     for (var i = 0; i < types.length; i++) {
       if (types[i].selected) {
         setMinPrice(typeMap[types[i].value].minPrice);
+        break;
       }
     }
   };

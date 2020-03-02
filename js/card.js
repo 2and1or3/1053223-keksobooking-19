@@ -27,24 +27,24 @@
     var cardFeatures = cardElement.querySelector('.popup__features');
     cardFeatures.innerHTML = '';
 
-    for (var j = 0; j < cardData.offer.features.length; j++) {
+    cardData.offer.features.forEach(function (feature) {
       var listItem = document.createElement('li');
       listItem.classList.add('popup__feature');
-      listItem.classList.add('popup__feature--' + cardData.offer.features[j]);
+      listItem.classList.add('popup__feature--' + feature);
 
       cardFeatures.appendChild(listItem);
-    }
+    });
 
     var fragmentImgContainer = document.createDocumentFragment();
 
-    for (var k = 0; k < cardData.offer.photos.length; k++) {
+    cardData.offer.photos.forEach(function (photo) {
       var imageTemplate = cardPhotos.querySelector('.popup__photo')
         .cloneNode(true);
 
-      imageTemplate.src = cardData.offer.photos[k];
+      imageTemplate.src = photo;
 
       fragmentImgContainer.appendChild(imageTemplate);
-    }
+    });
     cardPhotos.innerHTML = '';
     cardPhotos.appendChild(fragmentImgContainer);
 

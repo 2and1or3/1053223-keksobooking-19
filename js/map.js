@@ -92,9 +92,10 @@
 
   var deletePins = function () {
     var pins = mapElement.querySelectorAll('.map__pin:not(.map__pin--main)');
-    for (var i = pins.length - 1; i >= 0; i--) {
-      pins[i].remove();
-    }
+
+    pins.forEach(function (pin) {
+      pin.remove();
+    });
   };
 
   var getPriceRange = function (price) {

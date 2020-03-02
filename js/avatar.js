@@ -27,12 +27,6 @@
     });
   };
 
-  // var resetPreview = function (arr) {
-  //   arr.forEach(function (preview) {
-  //     preview.src = EMPTY_PHOTO_SRC;
-  //   });
-  // };
-
   makePreviewer(userChooser, userPreview);
   makePreviewer(bookingChooser, bookingPreview);
 
