@@ -3,7 +3,9 @@
 (function () {
   var TIMEOUT_IN_MS = 5000;
   var GET_URL = 'https://js.dump.academy/keksobooking/data';
+  var GET = 'GET';
   var POST_URL = 'https://js.dump.academy/keksobooking';
+  var POST = 'POST';
 
   var statusCode = {
     OK: 200
@@ -38,14 +40,14 @@
   var load = function (onLoad, onError) {
     var request = makeRequest(onLoad, onError);
 
-    request.open('GET', GET_URL);
+    request.open(GET, GET_URL);
     request.send();
   };
 
   var save = function (data, onLoad, onError) {
     var request = makeRequest(onLoad, onError);
 
-    request.open('POST', POST_URL);
+    request.open(POST, POST_URL);
     request.send(data);
   };
 
