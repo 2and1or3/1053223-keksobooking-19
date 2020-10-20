@@ -2,9 +2,9 @@
 
 (function () {
   var TIMEOUT_IN_MS = 5000;
-  var GET_URL = 'https://js.dump.academy/keksobooking/data';
+  var GET_URL = 'https://21.javascript.pages.academy/keksobooking/data';
   var GET = 'GET';
-  var POST_URL = 'https://js.dump.academy/keksobooking';
+  var POST_URL = 'https://21.javascript.pages.academy/keksobooking';
   var POST = 'POST';
 
   var statusCode = {
